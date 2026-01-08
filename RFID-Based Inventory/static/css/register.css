@@ -1,0 +1,97 @@
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.navbar-brand {
+  margin-left: 30px;
+  font-size: 24px;
+  color: white;
+  font-weight: 700;
+}
+
+.navbar-nav .nav-link {
+  color: white;
+  font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover {
+  color: orange; 
+}
+
+body{
+    background: linear-gradient(to right, #b3c8ef, #adf5df, #f5c6d7, #f6c9ef);
+}
+.container {
+    width: 50%;
+    padding: 30px;
+    background-color: rgb(237, 232, 172);
+    color: black;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 90px auto;
+    font-size: 16px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    font-size: 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: black;
+}
+
+.footer {
+    background-color: #141419;
+    color: white;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    padding: 15px 0;
+    margin: auto;
+}
+
+.row p{
+    text-align: justify;
+}
+.row i{
+    font-size: 30px;
+    margin-left:-160px;
+}
+
+.row i:hover{
+    color:orange;
+}

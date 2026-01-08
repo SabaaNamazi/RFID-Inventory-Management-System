@@ -1,0 +1,9 @@
+
+(1, '3E00BD61F416', 'Pen')
+(2, '3E00BD61E80A', 'Rice')
+(3, '3E00BD61FB19', 'Tablet'),
+(5, '3E00BCC899D3', 'Chips'),
+(6, '3E00BD61BB59', 'Phone'),
+(7, '3E00BD6206E7', 'Milk'),
+(14, '3E00BD61FE1C', 'T-Shirt'),
+(15, '3E00BD6442A5', 'Bread'),

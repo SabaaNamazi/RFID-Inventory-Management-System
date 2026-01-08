@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Create User</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f29ef8, #98f0bb);
+            color: #212529;
+        }
+
+        .navbar {
+            transition: background 0.4s;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link:focus {
+            color: #ffc107 !important;
+
+            transform: translateY(-2px);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+        }
+
+        .card-header {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            background: black;
+        }
+
+        .card-body {
+            padding: 2rem;
+            background-color: #fbd7c2;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 8px rgba(13, 110, 253, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #218838);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+            transform: scale(1.02);
+        }
+
+
+        footer {
+            background: #212529;
+            color: #ccc;
+        }
+
+        footer span {
+            font-weight: bold;
+            color: #ffc107;
+        }
+
+        @media (max-width: 576px) {
+            .card-body {
+                padding: 1rem;
+            }
+
+            .btn-success {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand text-warning" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{{ url_for('admin_dashboard') }}">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{{ url_for('add_product') }}">Add Product</a>
+                    </li>
+                    {% if session.get('email') %}
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <section class="py-5 mt-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-7">
+                    <div class="card shadow-lg">
+                        <div class="card-header text-white text-center">
+                            <h4 class="mb-0">Create New User</h4>
+                        </div>
+                        <div class="card-body">
+                            {% for message in get_flashed_messages() %}
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+
+                            <form method="POST" action="{{ url_for('admin_create') }}">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <input type="text" id="name" name="name" class="form-control"
+                                        placeholder="Enter full name" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" id="email" name="email" class="form-control"
+                                        placeholder="Enter email address" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="number" class="form-label">Phone Number</label>
+                                    <input type="text" id="number" name="number" class="form-control"
+                                        placeholder="Enter phone number" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" id="password" name="password" class="form-control"
+                                        placeholder="Create password" required />
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="role" class="form-label">Role</label>
+                                    <select id="role" name="role" class="form-select" required>
+                                        <option value="">-- Select Role --</option>
+                                        <option value="user">User</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-success w-100">Create User</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <footer class="footer text-center py-3 mt-auto">
+        <div class="container">
+            © 2025 <span>RFID-Based Inventory Analytics</span>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

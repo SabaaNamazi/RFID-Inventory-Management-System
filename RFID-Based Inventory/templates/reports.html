@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(to right, #f5c3e6, #cdf4ef, #f3c6ff, #ffe6b8);
+        }
+
+        h2 {
+            font-weight: bold;
+            color: #0d6efd;
+            text-shadow: 1px 1px #ccc;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .nav-link {
+            color: #ffffff !important;
+            text-decoration: none !important;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #ffc107 !important;
+            text-decoration: none !important;
+        }
+
+        .form-select,
+        .form-control {
+            border: 2px solid #0d6efd;
+            transition: all 0.3s;
+        }
+
+        .form-select:focus,
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            border-color: #198754;
+        }
+
+        .btn-success {
+            background: linear-gradient(to right, #198754, #28a745);
+            border: none;
+            padding: 10px 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(to right, #157347, #218838);
+        }
+
+        .navbar {
+            background: linear-gradient(to right, #000000, #343a40);
+        }
+
+        .nav-link:hover {
+            color: #ffc107 !important;
+            text-decoration: underline;
+        }
+
+        footer {
+            background: linear-gradient(to right, #343a40, #212529);
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 120px;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-warning" href="{{ url_for('home') }}">Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link fw-semibold"
+                            href="{{ url_for('admin_dashboard') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('add_product') }}">Add
+                            Product</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('product_list') }}">Product
+                            List</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('admin_create') }}">Add
+                            User</a></li>
+
+                    {% if session.get('email') %}
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="{{ url_for('login') }}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2 class="text-center mb-4"><i class="fa-solid fa-chart-column me-2"></i>Download Reports</h2>
+        <form method="GET" action="{{ url_for('download_report') }}" class="row g-3">
+            <div class="col-md-4">
+                <label>Report Type</label>
+                <select name="report_type" class="form-select" required>
+                    <option value="">Choose</option>
+                    <option value="inventory">Full Inventory</option>
+                    <option value="sales">Sales Report</option>
+                    <option value="deadstock">Dead Stock</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label>From Date (Sales Only)</label>
+                <input type="date" name="from_date" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label>To Date (Sales Only)</label>
+                <input type="date" name="to_date" class="form-control">
+            </div>
+            <div class="col-12 text-center mt-3">
+                <button type="submit" class="btn btn-success"><i class="fa-solid fa-file-arrow-down me-2"></i>Download
+                    CSV</button>
+            </div>
+        </form>
+    </div>
+
+
+    <footer class="footer text-center py-3 mt-auto text-light">
+        <div class="container-footer">
+            © 2025 <span class="text-warning">RFID-Based Inventory Analytics</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

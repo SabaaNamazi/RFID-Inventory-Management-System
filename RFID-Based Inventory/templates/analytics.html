@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        body {
+            padding-top: 70px;
+            background-color: white;
+
+        }
+
+        .chart-container {
+            background-color: #b4f1f3;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+        }
+
+        h2,
+        h5 {
+            color: black;
+        }
+
+        ul li {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+
+        .text-muted {
+            color: #aaa !important;
+        }
+
+        footer {
+            background: #15151f;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-warning" href="{{ url_for('home') }}">Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link text-light fw-semibold"
+                            href="{{ url_for('admin_dashboard') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-light fw-semibold"
+                            href="{{ url_for('add_product') }}">Add Product</a></li>
+                    <li class="nav-item"><a class="nav-link text-light fw-semibold"
+                            href="{{ url_for('product_list') }}">Product List</a></li>
+                    <li class="nav-item"><a class="nav-link text-light fw-semibold"
+                            href="{{ url_for('admin_create') }}">Add User</a></li>
+                    {% if session.get('email') %}
+                    <li class="nav-item"><a class="nav-link text-light fw-semibold"
+                            href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link text-light fw-semibold"
+                            href="{{ url_for('login') }}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">📊 Inventory Analytics Dashboard</h2>
+
+
+        <div class="chart-container">
+            <h5 class="mb-3 text-center">📈 Weekly Sales Trend</h5>
+            <div id="salesChart" style="height: 400px;"></div>
+        </div>
+
+
+        <div class="chart-container">
+            <h5 class="mb-3 text-center">🏆 Top-Selling Products (by orders)</h5>
+            <div id="topProductsChart" style="height: 400px;"></div>
+        </div>
+
+
+        <div class="chart-container">
+            <h5 class="mb-3 text-center">🛑 Dead Stock Products (unchanged > 30 days)</h5>
+            <ul>
+                {% for product in dead_stock %}
+                <li class="text-danger fw-bold fs-3">{{ product.name }} <span class="text-dark fw-bold fs-3">(Last
+                        updated: {{
+                        product.updated_at }})</span></li>
+                {% else %}
+                <li class="text-muted">No dead stock found</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+
+        <div class="chart-container">
+            <h5 class="mb-3 text-center">🔄 Product Movement Summary</h5>
+            <div id="movementChart" style="height: 400px;"></div>
+        </div>
+    </div>
+
+    <footer class="footer text-center py-3 mt-5">
+        <div class="container">
+            © 2025 <span class="text-warning">RFID-Based Inventory Analytics</span>.
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <script>
+        // A. Line Chart for Daily Sales
+        const salesChart = echarts.init(document.getElementById('salesChart'));
+        salesChart.setOption({
+            backgroundColor: '#1e1e2f',
+            color: ['#42a5f5'],
+            title: {
+                text: 'Daily Sales Trend',
+                left: 'center',
+                textStyle: {
+                    color: '#fff',
+                    fontSize: 18,
+                    fontWeight: 'bold'
+                }
+            },
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: '#333',
+                borderColor: '#555',
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: {{ daily_sales | map(attribute = 'date') | list | tojson }},
+            axisLabel: {
+            rotate: 45,
+            color: '#ccc'
+        },
+            axisLine: { lineStyle: { color: '#888' } }
+                },
+            yAxis: {
+            type: 'value',
+            min: 0,
+            axisLabel: { color: '#ccc' },
+            axisLine: { lineStyle: { color: '#888' } },
+            splitLine: { lineStyle: { color: '#333' } }
+        },
+            series: [{
+                name: 'Total Sales',
+                data: {{ daily_sales | map(attribute = 'count') | list | tojson }},
+            type: 'line',
+            smooth: true,
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: {
+                width: 4,
+                color: {
+                    type: 'linear',
+                    x: 0, y: 0, x2: 1, y2: 0,
+                    colorStops: [
+                        { offset: 0, color: '#42a5f5' },
+                        { offset: 1, color: '#00e5ff' }
+                    ]
+                }
+            },
+            itemStyle: { color: '#00e5ff' },
+            areaStyle: {
+                color: 'rgba(66, 165, 245, 0.15)'
+            }
+                }],
+            grid: {
+            left: '5%',
+            right: '5%',
+            bottom: '15%',
+            containLabel: true
+        }
+            });
+
+        // B. Pie Chart for Top Selling Products
+        const topProductsChart = echarts.init(document.getElementById('topProductsChart'));
+        topProductsChart.setOption({
+            backgroundColor: '#2a2438',
+            color: ['#ff6384', '#8e44ad', '#f39c12', '#1abc9c', '#3498db'],
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: '#2d2d2d',
+                borderColor: '#444',
+                textStyle: { color: '#fff' }
+            },
+            title: {
+                text: 'Top-Selling Products',
+                left: 'center',
+                textStyle: {
+                    color: '#fff',
+                    fontSize: 17
+                }
+            },
+            series: [{
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                label: {
+                    show: true,
+                    color: '#fff',
+                    formatter: '{b}: {c} ({d}%)'
+                },
+                labelLine: {
+                    lineStyle: { color: '#999' }
+                },
+                data: {{ top_products | tojson }}
+                }]
+            });
+
+        // C. Movement Summary Pie Chart
+        const movementChart = echarts.init(document.getElementById('movementChart'));
+        movementChart.setOption({
+            backgroundColor: '#111820',
+            color: ['#2ecc71', '#f1c40f', '#e74c3c'],
+            tooltip: {
+                trigger: 'item',
+                backgroundColor: '#1f1f1f',
+                borderColor: '#666',
+                textStyle: { color: '#fff' }
+            },
+            title: {
+                text: 'Product Movement',
+                left: 'center',
+                textStyle: {
+                    color: '#fff',
+                    fontSize: 17
+                }
+            },
+            series: [{
+                type: 'pie',
+                radius: '60%',
+                label: {
+                    show: true,
+                    formatter: '{b}\n{c} items\n({d}%)',
+                    color: '#fff'
+                },
+                labelLine: {
+                    length: 20,
+                    length2: 10,
+                    lineStyle: {
+                        color: '#aaa'
+                    }
+                },
+                itemStyle: {
+                    shadowBlur: 15,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)'
+                },
+                data: [
+                    { value: {{ movement.fast }}, name: 'Fast-Moving' },
+            { value: {{ movement.slow }}, name: 'Slow-Moving' },
+            { value: {{ movement.non }}, name: 'Non-Moving' }
+                    ]
+                }]
+            });
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

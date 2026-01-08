@@ -1,0 +1,80 @@
+🔧 Steps to Open Port 5000 in Windows Firewall
+Open Windows Defender Firewall with Advanced Security:
+
+Press Windows + R, type wf.msc, and press Enter.
+
+Alternatively, go to Control Panel > System and Security > Windows Defender Firewall, then click on Advanced settings on the left pane.
+
+Create a New Inbound Rule:
+
+In the left pane, select Inbound Rules.
+
+In the right pane, click on New Rule... to open the New Inbound Rule Wizard.
+
+Configure the Rule:
+
+Rule Type: Select Port and click Next.
+
+Protocol and Ports:
+
+Choose TCP.
+
+Select Specific local ports and enter 5000.
+
+Click Next.
+
+Action: Choose Allow the connection and click Next.
+
+Profile: Ensure that Private is checked (since you're on a home or trusted network). You can also check Domain if applicable. Click Next.
+
+Name: Enter a name like "Flask Port 5000" and click Finish.
+
+🧪 Verify the Port is Open
+After creating the rule, you can verify that port 5000 is open:
+
+Using Command Prompt:
+
+Open Command Prompt.
+
+Run the command: netstat -an | find "5000"
+
+If the port is open and your Flask app is running, you should see a line indicating that the system is listening on port 5000.
+
+Using Telnet (Optional):
+
+Ensure Telnet is installed on your system.
+
+From another device on the same network, open Command Prompt.
+
+Run: telnet <Your_IP_Address> 5000
+
+If the connection is successful, the port is open and accessible.
+
+📝 Additional Notes
+Firewall Profiles: Windows Firewall applies rules based on network profiles: Domain, Private, and Public. Ensure that the rule applies to the correct profile corresponding to your network type.
+
+Router Configuration: If you're behind a router and want to allow external access (from outside your local network), you'll need to set up port forwarding on your router to forward port 5000 to your computer's local IP address.
+
+Security Considerations: Opening ports can expose your system to potential threats. Only open ports that are necessary, and consider implementing additional security measures like authentication and encryption.
+
+By following these steps, your Flask application should be accessible from other devices on the same network via http://<Your_IP_Address>:5000.
+
+
+
+http://192.168.79.157:5000/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
